@@ -38,15 +38,15 @@ class FortiGate:
         """
         req = requests.session()
         
-        if not self.s_signed_cert:
-            requests.packages.urllib3.disable_warnings()
-            req.verify = False
+        if self.s_signed_cert:
+          requests.packages.urllib3.disable_warnings()
+          req.verify = False
             
         try:
-            # Attempt to send a request to the FortiGate with a timeout of 3 seconds
-            req.get(f'https://{ip}', timeout=3)
+          # Attempt to send a request to the FortiGate with a timeout of 3 seconds
+          req.get(f'https://{ip}', timeout=3)
         except:
-            raise FortigateOfflineError(f'FortiGate is offline at {ip}')
+          raise FortigateOfflineError(f'FortiGate is offline at {ip}')
 
     def get_access_ip(self):
         """
