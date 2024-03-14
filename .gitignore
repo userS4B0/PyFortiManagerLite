@@ -1,4 +1,9 @@
-# Ingnore the following files
+# Ingnore .venv
 .venv
+
+# Ignore data folder
 data
+
+# Igonre cache
 *__pycache__*
+*.pyc
