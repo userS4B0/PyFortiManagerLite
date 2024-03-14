@@ -1,0 +1,4 @@
+# Ingnore the following files
+.venv
+data
+*__pycache__*
