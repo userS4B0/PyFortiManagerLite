@@ -3,6 +3,8 @@
 ### IMPORTS
 import requests  # Importing the 'requests' module for making HTTP requests
 
+from src.file_handlers import logger
+
 ### GLOBAL VARS
 # The 'req' object is used to make HTTPS requests
 req = requests.session()
@@ -48,16 +50,23 @@ def check_online_ip(fgt):
     global online_ip
 
     # Check if the FortiGate is online on its primary IP address
-    if ping(fgt['ip_1']):
-        online_ip = fgt['ip_1']
+    logger.info(f'Attempting request to {fgt['Managment IP 01']}')
+    if ping(fgt['Managment IP 01']):
+        online_ip = fgt['Managment IP 01']
+        logger.info(f'{fgt['Managment IP 01']} is online')
         return online_ip
     
     # If not, check if the FortiGate has a secondary IP address and if it is online
-    elif fgt['ip_2'] != '' and ping(fgt['ip_2']):
-        online_ip = fgt['ip_2']
+    elif fgt['Managment IP 02'] != '' and ping(fgt['Managment IP 02']):
+        logger.warning(f'{fgt['Managment IP 01']} connection timed out')
+        logger.info(f'Attempting request to {fgt['Managment IP 02']}')
+        logger.info(f'{fgt['Managment IP 02']} is online')
+        online_ip = fgt['Managment IP 02']
         return online_ip
     
     # If the FortiGate is not available on any IP address, return False
+    logger.warning(f'{fgt['Managment IP 02']} connection timed out')
+    logger.error(f'There is no Management IP assigned')
     online_ip = ''
     return False
 
@@ -74,14 +83,16 @@ def mount_url(fgt):
     - '': If the FortiGate is not available on any IP address.
     """
     # URI to backup the FortiGate
-    URI = f'/api/v2/monitor/system/config/backup?scope={fgt["vdomtype"]}&access_token='
+    URI = f'/api/v2/monitor/system/config/backup?scope={fgt["VDOM Type"]}&access_token='
 
     # Check if the FortiGate is online on any of its IP addresses
     is_online = check_online_ip(fgt)
     if is_online:
         # If it is online, mount the URL to backup the FortiGate
-        return f'https://{is_online}{URI}{fgt["token"]}'
+        logger.info(f'Mounted URL at https://{is_online}{URI}{fgt["API Token"]}')
+        return f'https://{is_online}{URI}{fgt["API Token"]}'
     else:
+        logger.warning(f'No URL is mounted')
         return ''
 
 #### ---------- EOF ---------- ####

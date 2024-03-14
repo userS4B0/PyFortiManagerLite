@@ -1,9 +1,10 @@
 import sys
 
 from src import file_handlers as file
-from src import log_handlers as logging
 from src import api_handlers as api
-from src import payloads
+
+import payloads
+from payloads import backup
 
 bkp_fail = []
 
@@ -15,9 +16,7 @@ def main():
     # Create folders for backups and logs if they don't exist
     file.create_folders()
 
-    # Create log file
-    log_file = logging.create_log()
-    log_file.write(logging.log("program started"))
+    file.logger.info('Program started')
 
     # Backup each Fortigate
     for fgt in inventory:
@@ -27,47 +26,52 @@ def main():
         error_message = ''
         
         print('\n========================================')
-        print(f'Fortigate: {fgt["name"]}')
-        log_file.write(logging.log(f'starting job on fgt_device_name_[{fgt["name"]}]'))
+        print(f'Fortigate: {fgt["Name"]}')
+        file.logger.info(f'Starting Job at [{fgt["Name"]}]')
         
         # Call the main backup function
-        bkp_ok = payloads.execute_backup(fgt)
+        
+        # FIXME: Doesnt read the bkp file correctly
+        # payloads.collect.retrieve_data(fgt)
+        # bkp_file = payloads.backup.execute_backup(fgt)
 
+        bkp_file = backup.execute_backup(fgt)
+        
         # Check if the backup was successful
-        if bkp_ok:
+        if bkp_file:
             print('Backup successful!')
-            log_file.write(logging.log(f'fgt_device_name_[{fgt["name"]}] at mgmt_ip_[{api.online_ip}]'))
-            log_file.write(logging.log(f'fgt_device_name_[{fgt["name"]}] backup succesfull'))
+            file.logger.info(f'Fortigate Name: [{fgt["Name"]}] at Management IP [{api.online_ip}] Backup Succesfull!')
 
         # If not, check if the Fortigate is offline or if there was an error
         else:
             if api.online_ip == '':
                 print('Fortigate offline!')
-                log_file.write(logging.log_error(f'fgt_device_name_[{fgt["name"]}] device is offline'))
+                file.logger.warning(f'Fortigate Name: [{fgt["Name"]}] Is Offline!')
 
             elif error_message != '':
                 print(f'Error message: {file.error_message}')
-                log_file.write(logging.log_error(f'fgt_device_name_[{fgt["name"]}] {file.error_message}'))
+                file.logger.error(f'Fortigate Name: [{fgt["Name"]}]; {file.error_message}')
 
             print('Backup failed!')
-            log_file.write(logging.log_error(f'fgt_device_name_[{fgt["name"]}] backup failed'))
+            file.logger.warning(f'Fortigate Name: [{fgt["Name"]}] Backup Failed!')
 
         print('========================================\n')
     
     # Print the list of failed backups if there are any
     if len(bkp_fail) > 0:
         print('List of failed backups:')
-        log_file.write(logging.log(f'fgt_device_name_[{fgt["name"]}]'))
+        file.logger.warning(f'List of failed backups:')
+        file.logger.warning(f'Fortigate Name: [{fgt["Name"]}]')
+        
         for fgt in bkp_fail:
             print(fgt)
-            log_file.write(logging.log(f'{fgt}\n'))
+            file.logger.warning(f'{fgt}')
         
         print(f'\nCount: {len(bkp_fail)}\n')
-        log_file.write(logging.log(f'fgt_total_backup_count [{len(bkp_fail)}]'))
+        file.logger.warning(f'Total of Failed Backups [{len(bkp_fail)}]')
 
-    log_file.write(logging.log("program ended"))
-    log_file.close()
     print('Job finished!')
+    file.logger.info('Program ended')
     sys.exit()
 
 if __name__ == '__main__':

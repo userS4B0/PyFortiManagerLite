@@ -18,22 +18,29 @@ def execute_backup(fgt):
     Returns:
     - bool: True if the backup was successful, False otherwise.
     """
+    file.logger.info(f'Attempting to create Backup at [{fgt["Name"]}]')
+    
     # Mount the backup URL
+    file.logger.info(f'Attempting to mount URL')
     url = api.mount_url(fgt)
     if not url:
+        file.logger.error(f'No URL was Provided')
         return False
 
     # Perform the backup
+    file.logger.info(f'URL Mounted, performing backup at [{api.online_ip}]')
     print(f'Fortigate online on {api.online_ip}, backing up...')
     try:
+        file.logger.info(f'Attempting API request to {url}')
         bkp_data = api.req.get(url)  # Sending GET request to the mounted URL to perform backup
     except Exception as e:
-        global error_message
-        error_message = str(e)
+        file.logger.exception(f'An Exception Ocurred: {str(e)}')
         return False
 
     # Save and check the backup file
-    file_ok = file.save_and_check_file(fgt['name'], bkp_data)  # Saving backup data to file and checking it
+    file.logger.info(f'Checking Backup File [{fgt['Name']}]')
+    file_ok = file.save_and_check_file(fgt['Name'], bkp_data)  # Saving backup data to file and checking it
+    file.logger.info(f'Backup File [{fgt['Name']}] is correct!')
     return file_ok
 
 #### ---------- EOF ---------- ####

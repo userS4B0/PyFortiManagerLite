@@ -6,5 +6,5 @@
 
 ## **Greetings**
 
-This project is mainly based in [this repo](https://github.com/mcarneir0/fortigate-backup-api)
+This project is mainly based in [this repo](https://github.com/mcarneir0/fortigate-backup-api) where I checked all the code and implement my solution according to my needs.
 
