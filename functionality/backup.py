@@ -1,6 +1,6 @@
 import requests
 
-from api.FortiGate import FortiGate, FortigateOfflineError
+from api.FortiGate import FortiGate, FortigateOfflineError 
 
 class BackupFailedError(Exception):
     """Custom exception indicating that the backup job failed."""
@@ -13,10 +13,17 @@ class Backup:
 
     def perform_backup(self, backup_path):
         """Perform a backup operation and save the backup file to the specified path."""
+        
+        req = requests.session()
+        
+        if self.fortigate.has_self_signed_certificate():
+            requests.packages.urllib3.disable_warnings()
+            req.verify = False
+        
         try:
             backup_url = self.fortigate.mount_api_url()    # Mount the backup URL
 
-            response = requests.get(backup_url)    # Request backup via HTTP
+            response = req.get(backup_url)    # Request backup via HTTP
             response.raise_for_status()    # Raise exception if status code is not successful
 
             with open(backup_path, 'wb') as f:

@@ -1,2 +1,4 @@
-logs_path:
-backup_path: 
+LOGS_PATH: C:\Users\S4B0\Documents\testin_app\logs
+BACKUP_PATH: C:\Users\S4B0\Documents\testin_app\backups
+REGISTRY_FILE:
+INVENTORY_FILE:

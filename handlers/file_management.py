@@ -1,24 +1,24 @@
 import os
 import yaml
+import csv
+
+from pathlib import Path
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 APP_DIR = os.path.dirname(CURRENT_DIR)
 DATA_DIR = os.path.join(APP_DIR, 'data')
-DEFAULT_CONFIG_PATH = os.path.join(DATA_DIR, 'config', 'config.yaml')
-USER_CONFIG_PATH = os.path.join(DATA_DIR, 'config', 'user_config.yaml')
+DEFAULT_CONFIG_PATH = os.path.join(APP_DIR, 'config', 'config.yaml')
+USER_CONFIG_PATH = os.path.join(APP_DIR, 'config', 'user_config.yaml')
 
-# # Initial Tests
-# print(CURRENT_DIR)
-# print(APP_DIR)
-# print(DATA_DIR)
-# print(CONFIG_PATH)
+class DataLoadingError (Exception):
+  pass
 
 def read_yaml_config(file_path):  # TODO: make it inherent from SO
     with open(file_path, 'r') as file:
         config = yaml.safe_load(file)
     return config
 
-def get_final_config():
+def load_configuration():
   default_config = read_yaml_config(DEFAULT_CONFIG_PATH)
   user_config = read_yaml_config (USER_CONFIG_PATH)
 
@@ -32,7 +32,41 @@ def get_final_config():
           final_config[key] = value
 
   return final_config
-# Imprime la configuración final
-print("Final Configuration:")
-config = get_final_config()
-print(config)
+
+config = load_configuration()
+
+def load_inventory():
+    """
+    Reads the inventory data from the 'inventory.csv' file.
+
+    Returns:
+        list: A list of dictionaries containing information about the FortiGate devices.
+    """
+    try:
+        with open(os.path.join(config['INVENTORY_FILE']), 'r') as file:
+            inventory = list(csv.DictReader(file, delimiter=','))
+        return inventory
+      
+    except FileNotFoundError as e:
+      raise DataLoadingError(f'Inventory not found: {e}')
+    
+    except Exception as e:
+      raise DataLoadingError(f'Error reading inventory.csv file: {e}')
+
+def load_registry():
+    """
+    Reads the inventory data from the 'registry.csv' file.
+
+    Returns:
+        list: A list of dictionaries containing information about the FortiGate devices.
+    """
+    try:
+        with open(os.path.join(config['REGISTRY_FILE']), 'r') as file:
+            inventory = list(csv.DictReader(file, delimiter=','))
+        return inventory
+      
+    except FileNotFoundError as e:
+      raise DataLoadingError(f'Registry not found: {e}')
+    
+    except Exception as e:
+      raise DataLoadingError(f'Error reading registry.csv file: {e}')
