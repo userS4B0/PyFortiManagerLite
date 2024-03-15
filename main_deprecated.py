@@ -1,7 +1,7 @@
 import sys
 
 # Importing custom modules
-from src import file_handlers as file
+from . import file_handlers_deprecated as file
 from src import api_handlers as api
 from payloads import backup
 

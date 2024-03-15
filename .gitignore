@@ -11,3 +11,6 @@ data
 
 # Ignore Tests folder
 test
+
+# Ignore blob folder
+blob
