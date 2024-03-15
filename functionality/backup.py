@@ -1,6 +1,6 @@
 import requests
 
-from api.fortigate import FortiGate, FortigateOfflineError
+from api.FortiGate import FortiGate, FortigateOfflineError
 
 class BackupFailedError(Exception):
     """Custom exception for indicating that the Backup Job Failed"""
