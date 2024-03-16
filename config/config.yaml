@@ -1,4 +1,0 @@
-LOGS_PATH: ./data/logs
-BACKUP_PATH: ./data/backups
-REGISTRY_FILE: ./data/regisry.csv
-INVENTORY_FILE: ./data/inventory.csv

@@ -1,20 +1,36 @@
 from sys import stderr
+from pathlib import Path
+from datetime import datetime
 
-from handlers import file_management
+from handlers.file_management import load_inventory, load_configuration
 from api.FortiGate import FortiGate
 from functionality.Backup import Backup, BackupFailedError
 
+DATE = datetime.now().strftime('%Y-%m-%d')      # Today's date in the format yyyy-mm-dd
+
 def main():
   
-  # Load fortigate inventory
-  print("Loading Inventory")
-  try:
-    devices = file_management.load_inventory()
-    print("Inventory Loaded")
+  #### TESTING AREA
   
+  # from handlers.file_management import CURRENT_DIR, APP_DIR, DEFAULT_CONFIG_PATH, USER_CONFIG_PATH
+  
+  # print(f' Current directory: {CURRENT_DIR.absolute()}')
+  # print(f' App Directory: {APP_DIR.absolute()}')
+  # print(f' Default Config Path: {DEFAULT_CONFIG_PATH.absolute()}')
+  # print(f' User config path: {USER_CONFIG_PATH.absolute()}')
+  
+  try:
+    print("Loading configuration")
+    config = load_configuration() # Load app configuration
+    print("Configuration loaded")
+    print(config)
+    
+    print("Loading Inventory")
+    devices = load_inventory(Path(config['INVENTORY_FILE']))  # Load fortigate inventory
+    print("Inventory Loaded")
+    
   except Exception as e:
-    print(f'Error: {e}')
-    print("Ending program...")
+    print(e, file=stderr)
     exit(1)
   
   # Convert devices into FortiGate instances in memory
@@ -46,8 +62,8 @@ def main():
     try:
       backup = Backup(device)
       print(f'Starting Job on: [{device.get_name()}]')
-      backup.perform_backup(file_management.config['BACKUP_PATH']) # FIXME: Premision denied when accesing folder
-      print(f'Job completed in [{device.get_name()}] backup successfully saved in: {file_management.config['BACKUP_PATH']}')
+      backup.perform_backup(Path(config['BACKUP_PATH']), f'{device.get_name()}_bkp_{DATE}.conf')
+      print(f'Job completed in [{device.get_name()}] backup successfully saved in: {config['BACKUP_PATH']}')
 
     except BackupFailedError as e:
       print(e, file=stderr)

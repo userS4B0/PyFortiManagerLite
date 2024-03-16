@@ -1,4 +1,5 @@
-import requests
+import requests, os
+from pathlib import Path
 
 from api.FortiGate import FortiGate, FortigateOfflineError 
 
@@ -11,32 +12,44 @@ class Backup:
         """Initialize the Backup object with a FortiGate instance."""
         self.fortigate = fortigate
 
-    def perform_backup(self, backup_path):
+    def perform_backup(self, backup_path: Path, backup_name: str):
         """Perform a backup operation and save the backup file to the specified path."""
         
         req = requests.session()
         
+        # Handle SSL Self Signed Certificate validations
         if self.fortigate.has_self_signed_certificate():
             requests.packages.urllib3.disable_warnings()
             req.verify = False
         
         try:
-            backup_url = self.fortigate.mount_api_url()    # Mount the backup URL
+            backup_url = self.fortigate.mount_api_url()  # Mount the backup URL
 
-            response = req.get(backup_url)    # Request backup via HTTP
-            response.raise_for_status()    # Raise exception if status code is not successful
+            response = req.get(backup_url)  # Request backup via HTTP
+            response.raise_for_status()  # Raise exception if status code is not successful
 
-            with open(backup_path, 'wb') as f:
-                f.write(response.content)
-
+            full_path = backup_path / backup_name  # Mount full backup path
+            
+            # Write FortiGate config to file
+            with open(full_path, 'wb') as f:
+                for line in response:
+                    f.write(line)
+                
+            # Check if the file is a valid FortiGate config file
+            with open(full_path, 'r') as file:
+                first_line = file.readline()
+                if not first_line.startswith('#config'):
+                    os.remove(full_path)  # Delete file
+                    raise BackupFailedError(f'backup job failed, invalid backup file: {e}')
+            
         except requests.RequestException as e:
-            raise BackupFailedError(f'Backup job failed due to HTTP error: {e}')
+            raise BackupFailedError(f'backup job failed due to HTTP error: {e}')
 
         except FortigateOfflineError as e:
-            raise BackupFailedError(f'Backup job failed, Fortigate is not connected: {e}')
+            raise BackupFailedError(f'backup job failed, Fortigate is not connected: {e}')
 
         except Exception as e:
-            raise BackupFailedError(f'Backup job failed: {e}')
+            raise BackupFailedError(f'backup job failed: {e}')
 
     def schedule_backup(self, frequency):
         """Schedule automatic backups based on the specified frequency."""

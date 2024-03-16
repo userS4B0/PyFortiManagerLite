@@ -1,0 +1,4 @@
+# Paths
+LOGS_PATH: C:\Users\S4B0\Documents\testing_app\logs
+BACKUP_PATH: C:\Users\S4B0\Documents\testing_app\backups
+INVENTORY_FILE: C:\Users\S4B0\Documents\testing_app\inventory.csv
