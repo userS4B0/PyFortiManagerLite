@@ -2,54 +2,76 @@ import yaml, csv
 
 from pathlib import Path
 
-CURRENT_DIR = Path('.')
-APP_DIR = CURRENT_DIR.parent
-DEFAULT_CONFIG_PATH = APP_DIR / 'data' / 'config.yaml'
-# USER_CONFIG_PATH = APP_DIR / 'user_config.yaml'
-
 class ConfigurationError (Exception):
+  """Custom exception for configuration errors."""
   pass
 
 class DataLoadingError (Exception):
+  """Custom exception for data loading errors."""
   pass
 
 def read_yaml_config(config_file: Path):
+  """
+    Reads a YAML configuration file.
+
+    Args:
+        config_file (Path): Path to the YAML configuration file.
+
+    Returns:
+        dict: Dictionary containing the YAML data.
+
+    Raises:
+        ConfigurationError: If an error occurs while reading or parsing the configuration file.
+    """
   try:
     with open(config_file, 'r') as file:
         config = yaml.safe_load(file)
     return config
   except FileNotFoundError as e:
-    raise ConfigurationError(f'Configuration file not found: {e}')
+    raise ConfigurationError(f'config file not found: {e}')
   except Exception as e:
-    raise ConfigurationError(f'Error loading config files: {e}')
+    raise ConfigurationError(f'error loading config files: {e}')
 
 def load_configuration():
+  """
+  Load configuration from YAML file.
+  
+  Returns:
+      dict: Configuration data.
+  
+  Raises:
+      ConfigurationError: If an error occurs while loading the configuration data.
+  """
+  CONFIG_PATH = Path('.').parent / 'config.yaml'  # Set the path to the configuration file
+  
   try:
-    # default_config = read_yaml_config(DEFAULT_CONFIG_PATH)
-    user_config = read_yaml_config (USER_CONFIG_PATH)
-
-    # final_config = {}
-    # for key, value in default_config.items():
-    #     if key in user_config and user_config[key] is not None:
-    #         final_config[key] = user_config[key]
-    #     else:
-    #         final_config[key] = value
-
-    #     return final_config
+    
+    user_config = read_yaml_config (CONFIG_PATH)
     return user_config
       
   except Exception as e:
-    raise DataLoadingError(f'Error loading program data: {e}')
+    raise DataLoadingError(f'error loading program data: {e}')
 
 def load_inventory(inventory_file: Path):
+    """
+    Load inventory data from a CSV file.
 
+    Args:
+        inventory_file (Path): Path to the inventory CSV file.
+
+    Returns:
+        list: List of dictionaries containing inventory data.
+
+    Raises:
+        DataLoadingError: If an error occurs while loading the inventory data.
+    """
     try:
         with open(inventory_file, 'r') as file:
             inventory = list(csv.DictReader(file, delimiter=','))
         return inventory
       
     except FileNotFoundError as e:
-      raise DataLoadingError(f'Inventory not found: {e}')
+      raise DataLoadingError(f'inventory not found: {e}')
     
     except Exception as e:
-      raise DataLoadingError(f'Error reading inventory.csv file: {e}')
+      raise DataLoadingError(f'error reading inventory file: {e}')

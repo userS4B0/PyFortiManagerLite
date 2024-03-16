@@ -1,4 +1,5 @@
-import requests, os
+import requests
+import os
 from pathlib import Path
 
 from api.FortiGate import FortiGate, FortigateOfflineError 
@@ -9,13 +10,26 @@ class BackupFailedError(Exception):
 
 class Backup:
     def __init__(self, fortigate: FortiGate):
-        """Initialize the Backup object with a FortiGate instance."""
+        """
+        Initialize the Backup object with a FortiGate instance.
+        
+        Parameters:
+            fortigate (FortiGate): An instance of the FortiGate class representing the FortiGate device.
+        """
         self.fortigate = fortigate
 
     def perform_backup(self, backup_path: Path, backup_name: str):
-        """Perform a backup operation and save the backup file to the specified path."""
+        """
+        Perform a backup operation and save the backup file to the specified path.
         
-        req = requests.session()
+        Parameters:
+            backup_path (Path): The path where the backup file will be saved.
+            backup_name (str): The name of the backup file.
+        
+        Raises:
+            BackupFailedError: If the backup process fails for any reason.
+        """
+        req = requests.session()    # Create a session for HTTP requests
         
         # Handle SSL Self Signed Certificate validations
         if self.fortigate.has_self_signed_certificate():

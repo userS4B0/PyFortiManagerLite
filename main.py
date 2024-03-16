@@ -12,13 +12,6 @@ def main():
   
   #### TESTING AREA
   
-  # from handlers.file_management import CURRENT_DIR, APP_DIR, DEFAULT_CONFIG_PATH, USER_CONFIG_PATH
-  
-  # print(f' Current directory: {CURRENT_DIR.absolute()}')
-  # print(f' App Directory: {APP_DIR.absolute()}')
-  # print(f' Default Config Path: {DEFAULT_CONFIG_PATH.absolute()}')
-  # print(f' User config path: {USER_CONFIG_PATH.absolute()}')
-  
   try:
     print("Loading configuration")
     config = load_configuration() # Load app configuration
