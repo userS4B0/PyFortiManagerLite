@@ -1,7 +1,7 @@
 # Ingnore local configurations
 .venv
 .vscode
-user_config.yml
+user_config.yaml
 
 # Ignore data folder
 data
