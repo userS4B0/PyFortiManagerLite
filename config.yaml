@@ -2,3 +2,10 @@
 LOGS_PATH: Example/log/path # You can add any path you want
 BACKUP_PATH: Example/backup/path # You can add any path you want
 INVENTORY_FILE: Example/path/to/inventory.csv # You can load inventory from wherever you want
+
+# Notifications
+MAIL_FROM: youremail@example.com # Desired mail to notify actions
+MAIL_LIST:  # List of contacts to notify
+  - mail@example.com
+  - mail2@example.com
+  - mail3@example.com

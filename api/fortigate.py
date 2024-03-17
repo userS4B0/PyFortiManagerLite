@@ -50,7 +50,7 @@ class FortiGate:
         """
         # Try to connect using the first management IP
         try:
-            self.connectivity_test(self.mgmt_ip_01)
+            self.test_connectivity(self.mgmt_ip_01)
             self.access_ip = self.mgmt_ip_01
             return self.access_ip
         except FortigateOfflineError:
@@ -58,7 +58,7 @@ class FortiGate:
 
         # If the first management IP fails, try the second one
         try:
-            self.connectivity_test(self.mgmt_ip_02)
+            self.test_connectivity(self.mgmt_ip_02)
             self.access_ip = self.mgmt_ip_02
             return self.access_ip
         except FortigateOfflineError:
@@ -67,7 +67,7 @@ class FortiGate:
         # If both management IPs fail, raise an error
         raise FortigateOfflineError("No matching mgmt ip to access the device")
 
-    def connectivity_test(self, ip):
+    def test_connectivity(self, ip):
         """
         Tests the connectivity with a given IP address.
         

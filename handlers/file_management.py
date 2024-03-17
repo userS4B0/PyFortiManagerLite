@@ -1,6 +1,7 @@
 import yaml, csv
 
 from pathlib import Path
+from api.FortiGate import FortiGate
 
 class ConfigurationError (Exception):
   """Custom exception for configuration errors."""
@@ -42,7 +43,8 @@ def load_configuration():
   Raises:
       ConfigurationError: If an error occurs while loading the configuration data.
   """
-  CONFIG_PATH = Path('.').parent / 'config.yaml'  # Set the path to the configuration file
+  # CONFIG_PATH = Path('.').parent / 'config.yaml'  # Set the path to the configuration file
+  CONFIG_PATH = Path('.').parent / 'user_config.yaml'  # TODO: ONLY PRE ENVIROMENT
   
   try:
     
@@ -67,8 +69,18 @@ def load_inventory(inventory_file: Path):
     """
     try:
         with open(inventory_file, 'r') as file:
-            inventory = list(csv.DictReader(file, delimiter=','))
-        return inventory
+            
+            inventory = map(lambda fortigate: FortiGate(
+              fortigate['Name'], 
+              fortigate['Managment IP 01'], 
+              fortigate['Managment IP 02'], 
+              fortigate['VDOM Type'], 
+              fortigate['SelfSignedCertificate'], 
+              fortigate['API Token']), 
+                            list(csv.DictReader(file, delimiter=','))
+            )
+            
+            return inventory
       
     except FileNotFoundError as e:
       raise DataLoadingError(f'inventory not found: {e}')
