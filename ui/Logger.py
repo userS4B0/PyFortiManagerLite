@@ -1,27 +1,59 @@
 from sys import stdout, stderr
+from datetime import datetime
 
+DATE = datetime.now().strftime('%Y-%m-%d')      # Today's date in the format yyyy-mm-dd
+TIME = datetime.now().strftime('%H:%M:%S')      # Today's date in the format yyyy-mm-dd
 
+class LogFileError(Exception):
+    pass
 
-class CustomLogger:
+class CustomLogger: # FIXME: Loggin file overwrites itself
   def __init__(self, verbosity=False):
     self.verbosity = verbosity
-
-    # self.format = '%(asctime)s - %(levelname)s - %(message)s'
-    self.format = '%(asctime)s - %(message)s'
 
   def set_verbosity(self, verbosity: bool):
     self.verbosity = verbosity
   
-  def log(self, message: str, file = stdout):
-    if self.verbosity:
-      print(f'INFO: {message}', file = file)
+  def info(self, message: str, file = None):
+    if self.verbosity: print(f'INFO: {message}', file = stdout) 
+    
+    if file != None:
+      try:
+        with open(file, 'a') as f:
+            f.write(f'[{DATE}][{TIME}] INFO: {message}\n')
 
-  def warn(self, message: str, file = stderr):
-    if self.verbosity:
-      print(f'WARNING: {message}', file = file)    
+      except FileNotFoundError as e: raise LogFileError(f'log file not found: {e}')
+      except Exception as e: raise LogFileError(f'error reading log file: {e}')  
 
-  def error(self, message: str, file = stderr):
-      print(f'ERROR: {message}', file = file)    
+  def warning(self, message: str, file = None):
+    if self.verbosity: print(f'WARNING: {message}', file = stderr) 
+    
+    if file != None:
+      try:
+        with open(file, 'a') as f:
+            f.write(f'[{DATE}][{TIME}] WARNING: {message}\n')
 
-  def critical(self, message: str, file = stderr):
-    print(f'CRITICAL: {message}', file = file)    
+      except FileNotFoundError as e: raise LogFileError(f'log file not found: {e}')
+      except Exception as e: raise LogFileError(f'error reading log file: {e}') 
+
+  def error(self, message: str, file = None):
+    if self.verbosity: print(f'ERROR: {message}', file = stderr) 
+    
+    if file != None:
+      try:
+        with open(file, 'a') as f:
+            f.write(f'[{DATE}][{TIME}] ERROR: {message}\n')
+
+      except FileNotFoundError as e: raise LogFileError(f'log file not found: {e}')
+      except Exception as e: raise LogFileError(f'error reading log file: {e}')    
+
+  def critical(self, message: str, file = None):    
+    if self.verbosity: print(f'CRITICAL: {message}', file = stderr) 
+    
+    if file != None:
+      try:
+        with open(file, 'a') as f:
+            f.write(f'[{DATE}][{TIME}] CRITICAL: {message}\n')
+
+      except FileNotFoundError as e: raise LogFileError(f'log file not found: {e}')
+      except Exception as e: raise LogFileError(f'error reading log file: {e}')    
