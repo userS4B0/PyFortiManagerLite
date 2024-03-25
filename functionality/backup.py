@@ -65,13 +65,13 @@ class Backup:
         except Exception as e:
             raise BackupFailedError(f'backup job failed: {e}')
 
-    def schedule_backup(self, frequency):
-        """Schedule automatic backups based on the specified frequency."""
-        # TODO: This might be not necessary as argparse and cron jobs can do the same thing,
-        # although this can be a way to define it more user-friendly
-        pass
+    # def schedule_backup(self, frequency):
+    #     """Schedule automatic backups based on the specified frequency."""
+    #     # TODO: This might be not necessary as argparse and cron jobs can do the same thing,
+    #     # although this can be a way to define it more user-friendly
+    #     pass
 
-    def restore_from_backup(self, backup_file):
-        """Restore configuration from a backup file."""
-        # TODO: Check if this is possible and worth it
-        pass
+    # def restore_from_backup(self, backup_file):
+    #     """Restore configuration from a backup file."""
+    #     # TODO: Check if this is possible and worth it
+    #     pass

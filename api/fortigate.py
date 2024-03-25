@@ -86,7 +86,7 @@ class FortiGate:
         try:
             # Attempt to send a request to the FortiGate with a timeout of 3 seconds
             req.get(f'https://{ip}', timeout=3)
-        except:
+        except Exception:
             raise FortigateOfflineError(f'FortiGate is offline at {ip}')
 
     def mount_api_url(self):
