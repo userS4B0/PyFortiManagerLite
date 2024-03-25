@@ -1,12 +1,14 @@
+import os
+
 VERSION = '0.2'
 URL = 'https://github.com/userS4B0/PyFortiManagerLite'
 
-
-def load_interactive_menu():
-  load_banner()
-  load_menu()
-  print("Coming soon!")
-  
+PAYLOADS = {
+   "1": "single-backup",
+   "2": "multi-backup",
+   "3": "sync-objects",
+   "4": "scrape-data"
+}
 
 def load_banner():
   
@@ -28,5 +30,29 @@ def load_banner():
   
   print(banner)
 
-def load_menu():
-  pass
+def load_main_menu():
+    print("Menu:")
+    print("1. Show inventory")
+    print("2. Check inventory conectivity")
+    print("3. Execute payload")
+    print("4. Settings")
+    print("5. Exit program")
+    return input("Choose an option: ")
+
+def load_payloads_menu():
+    print("Payloads menu: ")
+    for payload in PAYLOADS.keys():
+      print(f"{payload}: {PAYLOADS[payload]}")
+    print("5. Go back")
+    print("6. Exit")
+
+    return input("Choose a payload: ")
+
+def clear_terminal():
+  os.system('cls' if os.name == 'nt' else 'clear')
+
+def pause_flow():
+   input("Press ANY KEY to continue...")
+
+def separator(length):
+   print("=" * length)
