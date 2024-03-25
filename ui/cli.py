@@ -16,7 +16,16 @@ def load_cli():
   
   parser.add_argument('--payload', '-p', 
                       required = False,
-                      help = 'Expects a defined payload to execute.')
+                      help = """
+                      Expects a defined payload to execute.\n
+                      List of avalible payloads:
+                        - single-backup: attempts to perform a backup task via api throug a given Fortigate device from inventory.
+                        - multi-backup: attempts to perform backup jobs for all fortigate devices in inventory.
+                        - sync-objects: (Only in multi vdom fortigate devices) attempts to replicate and sync objects between fortigate devices vdoms.
+                        - scrape-data: attempts to get data from a fortigate config file and loads it in registry.csv file.
+                      """
+                      
+                      )
   
   parser.add_argument('--notify', '-n', 
                       required = False, 
