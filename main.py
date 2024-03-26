@@ -36,6 +36,7 @@ def main():
 
     try:
         if args.interactive:
+            UIController.logger.set_verbosity(True)
             UIController.interactive_mode(fortigates, config, log_file)
         else:
             payload = args.payload
