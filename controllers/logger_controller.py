@@ -34,7 +34,7 @@ class CustomLogger:  # FIXME: Loggin file overwrites itself
         if self.verbosity:
             print(f"WARNING: {message}", file=stderr)
 
-        if file != None:
+        if file is not None:
             try:
                 with open(file, "a") as f:
                     f.write(f"[{DATE}][{TIME}] WARNING: {message}\n")
@@ -48,7 +48,7 @@ class CustomLogger:  # FIXME: Loggin file overwrites itself
         if self.verbosity:
             print(f"ERROR: {message}", file=stderr)
 
-        if file != None:
+        if file is not None:
             try:
                 with open(file, "a") as f:
                     f.write(f"[{DATE}][{TIME}] ERROR: {message}\n")
@@ -62,7 +62,7 @@ class CustomLogger:  # FIXME: Loggin file overwrites itself
         if self.verbosity:
             print(f"CRITICAL: {message}", file=stderr)
 
-        if file != None:
+        if file is not None:
             try:
                 with open(file, "a") as f:
                     f.write(f"[{DATE}][{TIME}] CRITICAL: {message}\n")
