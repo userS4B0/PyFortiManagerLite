@@ -1,5 +1,8 @@
+# File: /views/ui_view.py
+
 import os
 
+# Constants
 VERSION = "0.2"
 URL = "https://github.com/userS4B0/PyFortiManagerLite"
 
@@ -11,53 +14,58 @@ PAYLOADS = {
 }
 
 
-def load_banner():
-    banner = f"""
-    #  ================================================================================================================================  #
-    #  __________       ___________               __   __   _____                                              ___     __  __            #
-    #  \\______   \\___ __\\_   _____/ ____ ________/  |_|__| /     \\ _____    ____ _____     ____   ____ _______|   |   |__|/  |_  ____    #
-    #   |     ___/   |  | |  ___)  / __ \\\\_  __ \\   __\\  |/  \\ /  \\\\__  \\  /    \\\\__  \\   / ___\\_/ __ \\\\_  __ \\   |   |  |   __\\/ __ \\   #
-    #   |    |    \\___  | |  \\__  (  \\_\\ )|  | \\/|  | |  |    \\    \\/ __ \\_   |  \\/ __ \\_/ /_/  \\  ___/_|  | \\/   |___|  ||  | \\  ___/_  #
-    #   |____|    / ____|/___  /   \\____/ |__|   |__| |__|____/\\_  /____  /___|  /____  /\\___  / \\___  /|__|  |______ \\__||__|  \\___  /  #
-    #             \\/         \\/                                  \\/     \\/     \\/     \\//_____/      \\/              \\/             \\/   #
-    #                                                                                                                                    #
-    #                                                                                                                                    #
-    #                                                                                                                                    #
-    #                                                               By: UserS4B0 ({URL})  v{VERSION}  #
-    #                                                                                                                                    #
-    #  ================================================================================================================================  #
-    """
+class UIView:
+    """View class responsible for user interface."""
 
-    print(banner)
+    @staticmethod
+    def print_banner():
+        """Prints the program banner."""
+        banner = f"""
+        # {'=' * 129} #
+        # {'By: UserS4B0'.center(127)} #
+        # {f'({URL})'.center(127)} #
+        # {'=' * 129} #
+        """
+        print(banner)
 
+    @staticmethod
+    def print_menu():
+        """Prints the main menu options."""
+        print("Menu:")
+        for idx, option in enumerate(UIView.get_menu_options(), start=1):
+            print(f"{idx}. {option}")
 
-def load_main_menu():
-    print("Menu:")
-    print("1. Show inventory")
-    print("2. Check inventory conectivity")
-    print("3. Execute payload")
-    print("4. Settings")
-    print("5. Exit program")
-    return input("Choose an option: ")
+    @staticmethod
+    def print_payloads_menu():
+        """Prints the payloads menu options."""
+        print("Payloads menu: ")
+        for idx, payload in PAYLOADS.items():
+            print(f"{idx}. {payload}")
+        print("5. Go back")
+        print("6. Exit")
 
+    @staticmethod
+    def clear_terminal():
+        """Clears the terminal screen."""
+        os.system("cls" if os.name == "nt" else "clear")
 
-def load_payloads_menu():
-    print("Payloads menu: ")
-    for payload in PAYLOADS.keys():
-        print(f"{payload}: {PAYLOADS[payload]}")
-    print("5. Go back")
-    print("6. Exit")
+    @staticmethod
+    def print_separator(length):
+        """Prints a separator line of specified length."""
+        print("=" * length)
 
-    return input("Choose a payload: ")
+    @staticmethod
+    def pause_flow():
+        """Pauses the program flow until any key is pressed."""
+        input("Press ANY KEY to continue.")
 
-
-def clear_terminal():
-    os.system("cls" if os.name == "nt" else "clear")
-
-
-def separator(length):
-    print("=" * length)
-
-
-def pause_flow():
-    input("Press ANY KEY to continue...")
+    @staticmethod
+    def get_menu_options():
+        """Returns a list of main menu options."""
+        return [
+            "Show inventory",
+            "Check inventory connectivity",
+            "Execute payload",
+            "Settings",
+            "Exit program",
+        ]

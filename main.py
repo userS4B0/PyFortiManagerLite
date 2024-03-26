@@ -1,19 +1,19 @@
 from pathlib import Path
 
-from controllers.logger_controller import DATE, LogFileError
-from controllers.ui_controller import cli_mode, interactive_mode, load_cli, logger
 from controllers.file_controller import (
     DataLoadingError,
     load_configuration,
     load_inventory,
 )
+from controllers.logger_controller import DATE, LogFileError
+from controllers.ui_controller import UIController
 
 
 def main():
-    args = load_cli()
+    args = UIController.load_cli()
 
     if args.verbose:
-        logger.set_verbosity(True)
+        UIController.logger.set_verbosity(True)
     try:
         config = load_configuration()  # Load app configuration
         fortigates = load_inventory(
@@ -22,24 +22,24 @@ def main():
         log_file = Path(config["LOGS_PATH"]) / f"pyfgtmgrl_{DATE}.log"
 
     except LogFileError as e:
-        logger.warning(e)
+        UIController.logger.warning(e)
         log_file = None
         pass
 
     except DataLoadingError as e:
-        logger.critical(e)
+        UIController.logger.critical(e)
         exit(1)
 
     except Exception as e:
-        logger.critical(e)
+        UIController.logger.critical(e)
         exit(1)
 
     try:
         if args.interactive:
-            interactive_mode(fortigates, config, log_file)
+            UIController.interactive_mode(fortigates, config, log_file)
         else:
-            selected_payload = args.payload
-            cli_mode(fortigates, config, log_file, selected_payload)
+            payload = args.payload
+            UIController.cli_mode(fortigates, config, log_file, payload)
     except KeyboardInterrupt:
         print("\nKeyboard Interruption Detected\nExiting Program...")
         exit(0)
