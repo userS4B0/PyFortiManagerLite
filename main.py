@@ -1,7 +1,6 @@
 from pathlib import Path
 
-from controllers.cli_controller import load_cli, cli_mode
-from controllers.interactive_controller import interactive_mode, logger
+from controllers.ui_controller import load_cli, cli_mode, interactive_mode, logger
 from controllers.logger_controller import DATE, LogFileError
 
 from handlers.file_management import load_configuration, load_inventory, DataLoadingError
@@ -31,20 +30,15 @@ def main():
         logger.critical(e)
         exit(1)
 
-    if args.interactive: 
-        try:
-            interactive_mode(fortigates, config, log_file, args.verbose)
-        except KeyboardInterrupt:
-            print("\nKeyboard Interruption Detected\nExiting Program...")
-            exit(0)
-
-    else:
-        try:
+    try:
+        if args.interactive: 
+            interactive_mode(fortigates, config, log_file)
+        else:
             selected_payload = args.payload
             cli_mode(fortigates, config, log_file,selected_payload)
-        except KeyboardInterrupt:
-            print("\nKeyboard Interruption Detected\nExiting Program...")
-            exit(0)
+    except KeyboardInterrupt:
+        print("\nKeyboard Interruption Detected\nExiting Program...")
+        exit(0)
 
 if __name__ == "__main__":
     main()
