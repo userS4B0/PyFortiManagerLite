@@ -1,49 +1,109 @@
-VERSION = "0.2"
-URL = "https://github.com/userS4B0/PyFortiManagerLite"
+from pathlib import Path
 
-PAYLOADS = {
-    "1": "single-backup",
-    "2": "multi-backup",
-    "3": "sync-objects",
-    "4": "scrape-data",
-}
+from models.fortigate_model import FortigateOfflineError
+from views.interactive_view import load_main_menu, load_payloads_menu, load_banner, clear_terminal, PAYLOADS, pause_flow, separator
+from controllers.logger_controller import CustomLogger, DATE
+
+from handlers.payloads.backup_payload import Backup
+
+logger = CustomLogger()
+
+def show_inventory(inventory):
+    clear_terminal()
+    print("FORTIGATE INVENTORY")
+    separator(80)
+
+    for device in inventory:
+        print(f"|   {device.get_name()}   |   {device.get_management_ip_01()}   |   {device.get_management_ip_02()}   |   {device.get_vdom_type()}   |")
+
+    separator(80)
+    pause_flow()
+
+def check_connectivity(fortigates, log_file):
+    clear_terminal()
+    print("CONNECTIVITY CHECK")
+    separator(80)
+
+    for device in fortigates:
+        try:
+            access_ip = device.get_access_ip()
+            logger.info(f"Device connected at {access_ip}", log_file)
+        except FortigateOfflineError as e:
+            logger.warning(f"FortiGate {device.get_name()} is offline: {e}", log_file)
+
+    separator(80)
+    pause_flow()
+
+def execute_payload(selected_payload, fortigates, config_file, log_file):
+    clear_terminal()
+    print(f"Choosen payload: {PAYLOADS[selected_payload]}")
+    
+    # Implement logic for each payload option
+    match selected_payload:
+        case "1":
+            print(f"{PAYLOADS[selected_payload]} functionality Coming Soon!")
+        case "2":
+            for device in fortigates:
+                try:
+                    backup = Backup(device)
+                    logger.info(f'Starting Job on: [{device.get_name()}]', log_file)
+                    backup.perform_backup(Path(config_file['BACKUP_PATH']), f'{device.get_name()}_bkp_{DATE}.conf')
+                    logger.info(f'Job completed in [{device.get_name()}] backup successfully saved in: {config_file['BACKUP_PATH']}', log_file)
+                except Exception as e:
+                    logger.warning(f'Backup failed for {device.get_name()}: {e}', log_file)
+        case "3":
+            print(f"{PAYLOADS[selected_payload]} functionality Coming Soon!")
+        case "4":
+            print(f"{PAYLOADS[selected_payload]} functionality Coming Soon!")
+
+        case _:
+            print("Invalid payload")
+
+    pause_flow()
+    clear_terminal()
+
+def interactive_mode(fortigates, config, log_file):
+    load_banner()
+    program_running = True
+    while program_running:
+        option = load_main_menu()
+
+        match option:
+            case "1":
+                show_inventory(fortigates)
+            case "2":
+                check_connectivity(fortigates, log_file)
+            case "3":
+                payload_menu_running = True
+                while payload_menu_running:
+                    payload_option = load_payloads_menu()
+                    if payload_option in PAYLOADS:
+                        execute_payload(payload_option, fortigates, config, log_file)
+                    
+                    match payload_option:
+                        case "5":
+                            clear_terminal()
+                            payload_menu_running = False
+                        case "6":
+                            clear_terminal()
+                            print("Selected option 6, exiting program")
+                            program_running = False
+                            exit(0)
+                        case _:
+                            clear_terminal()
+                            print("Option not valid!")
+            case "4":
+                clear_terminal()
+                print("Settings customization coming soon!")
 
 
-def load_banner():
-    banner = f"""
-  #  ================================================================================================================================  #
-  #  __________       ___________               __   __   _____                                              ___     __  __            #
-  #  \\______   \\___ __\\_   _____/ ____ ________/  |_|__| /     \\ _____    ____ _____     ____   ____ _______|   |   |__|/  |_  ____    #
-  #   |     ___/   |  | |  ___)  / __ \\\\_  __ \\   __\\  |/  \\ /  \\\\__  \\  /    \\\\__  \\   / ___\\_/ __ \\\\_  __ \\   |   |  |   __\\/ __ \\   #
-  #   |    |    \\___  | |  \\__  (  \\_\\ )|  | \\/|  | |  |    \\    \\/ __ \\_   |  \\/ __ \\_/ /_/  \\  ___/_|  | \\/   |___|  ||  | \\  ___/_  #
-  #   |____|    / ____|/___  /   \\____/ |__|   |__| |__|____/\\_  /____  /___|  /____  /\\___  / \\___  /|__|  |______ \\__||__|  \\___  /  #
-  #             \\/         \\/                                  \\/     \\/     \\/     \\//_____/      \\/              \\/             \\/   #
-  #                                                                                                                                    #
-  #                                                                                                                                    #
-  #                                                                                                                                    #
-  #                                                               By: UserS4B0 ({URL})  v{VERSION}  #
-  #                                                                                                                                    #
-  #  ================================================================================================================================  #
-  """
 
-    print(banner)
+            case "5":
+                clear_terminal()
+                print("Selected option 5, exiting program")
+                program_running = False
+                exit(0)
 
-
-def load_main_menu():
-    print("Menu:")
-    print("1. Show inventory")
-    print("2. Check inventory conectivity")
-    print("3. Execute payload")
-    print("4. Settings")
-    print("5. Exit program")
-    return input("Choose an option: ")
-
-
-def load_payloads_menu():
-    print("Payloads menu: ")
-    for payload in PAYLOADS.keys():
-        print(f"{payload}: {PAYLOADS[payload]}")
-    print("5. Go back")
-    print("6. Exit")
-
-    return input("Choose a payload: ")
+            case _:
+                clear_terminal()
+                print("Option not valid!")
