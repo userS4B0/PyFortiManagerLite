@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from controllers.cli_controller import load_cli
-from controllers.function.backup_payload import Backup, BackupFailedError
+from handlers.payloads.backup_payload import Backup, BackupFailedError
 from controllers.interactive_controller import (
     load_main_menu,
     load_payloads_menu,
@@ -19,10 +19,10 @@ def main():
     args = load_cli()
 
     try:
-        config = load_configuration()  # Cargar la configuración de la aplicación
+        config = load_configuration()  # Load app configuration
         fortigates = load_inventory(
             Path(config["INVENTORY_FILE"])
-        )  # Cargar el inventario de fortigate
+        )  # Load FortiGate inventory
         log_file = Path(config["LOGS_PATH"]) / f"pyfgtmgrl_{DATE}.log"
 
     except LogFileError as e:
