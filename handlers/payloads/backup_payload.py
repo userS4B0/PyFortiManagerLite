@@ -58,9 +58,7 @@ class Backup:
                 first_line = file.readline()
                 if not first_line.startswith("#config"):
                     os.remove(full_path)  # Delete file
-                    raise BackupFailedError(
-                        f"backup job failed, invalid backup file: {e}"
-                    )
+                    raise BackupFailedError("backup job failed, invalid backup file")
 
         except requests.RequestException as e:
             raise BackupFailedError(f"backup job failed due to HTTP error: {e}")
