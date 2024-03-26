@@ -17,7 +17,7 @@ class CustomLogger: # FIXME: Loggin file overwrites itself
   def info(self, message: str, file = None):
     if self.verbosity: print(f'INFO: {message}', file = stdout) 
     
-    if file != None:
+    if file is not None:
       try:
         with open(file, 'a') as f:
             f.write(f'[{DATE}][{TIME}] INFO: {message}\n')

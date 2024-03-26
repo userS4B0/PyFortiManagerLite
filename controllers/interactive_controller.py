@@ -47,12 +47,3 @@ def load_payloads_menu():
     print("6. Exit")
 
     return input("Choose a payload: ")
-
-def clear_terminal():
-  os.system('cls' if os.name == 'nt' else 'clear')
-
-def pause_flow():
-   input("Press ANY KEY to continue...")
-
-def separator(length):
-   print("=" * length)

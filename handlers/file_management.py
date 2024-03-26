@@ -2,7 +2,7 @@ import yaml
 import csv
 
 from pathlib import Path
-from api.Fortigate import FortiGate
+from models.fortigate_model import FortiGate
 
 class ConfigurationError (Exception):
   """Custom exception for configuration errors."""

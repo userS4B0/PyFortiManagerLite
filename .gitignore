@@ -3,8 +3,8 @@
 .vscode
 user_config.yaml
 
-# Ignore data folder
-data
+# Ignore inventory file
+inventory.csv
 
 # Igonre cache
 *__pycache__*

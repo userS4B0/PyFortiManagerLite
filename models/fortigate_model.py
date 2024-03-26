@@ -22,22 +22,13 @@ class FortiGate:
             api_token (str): The API token for accessing the device.
         """
         self.name = name
-        self.mgmt_ip_01 = mgmt_ip_01
-        self.mgmt_ip_02 = mgmt_ip_02
+        self.mgmt_ips = [mgmt_ip_01, mgmt_ip_02]
         self.vdom_type = vdom_type
         self.s_signed_cert = s_signed_cert
         self.api_token = api_token
         
         self.access_ip = None
 
-    # Getter methods for instance attributes
-    def get_name(self): return self.name
-    def get_management_ip_01(self): return self.mgmt_ip_01
-    def get_management_ip_02(self): return self.mgmt_ip_02
-    def get_vdom_type(self): return self.vdom_type
-    def has_self_signed_certificate(self): return self.s_signed_cert
-    def get_api_token(self): return self.api_token
-    
     def get_access_ip(self):
         """
         Tries to determine the access IP address by testing both management IPs.
@@ -48,23 +39,14 @@ class FortiGate:
         Raises:
             FortigateOfflineError: If both management IPs are offline.
         """
-        # Try to connect using the first management IP
-        try:
-            self.test_connectivity(self.mgmt_ip_01)
-            self.access_ip = self.mgmt_ip_01
-            return self.access_ip
-        except FortigateOfflineError:
-            pass
-
-        # If the first management IP fails, try the second one
-        try:
-            self.test_connectivity(self.mgmt_ip_02)
-            self.access_ip = self.mgmt_ip_02
-            return self.access_ip
-        except FortigateOfflineError:
-            pass
-
-        # If both management IPs fail, raise an error
+        for ip in self.mgmt_ips:
+            try:
+                self.test_connectivity(ip)
+                self.access_ip = ip
+                return self.access_ip
+            except FortigateOfflineError:
+                pass
+        
         raise FortigateOfflineError("No matching mgmt ip to access the device")
 
     def test_connectivity(self, ip):

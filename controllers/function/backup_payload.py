@@ -2,7 +2,7 @@ import requests
 import os
 from pathlib import Path
 
-from api.Fortigate import FortiGate, FortigateOfflineError 
+from models.fortigate_model import FortiGate, FortigateOfflineError 
 
 class BackupFailedError(Exception):
     """Custom exception indicating that the backup job failed."""

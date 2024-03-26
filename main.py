@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from api.Fortigate import FortigateOfflineError
+from models.fortigate_model import FortigateOfflineError
 from handlers.file_management import load_inventory, load_configuration
-from functionality.Backup import Backup, BackupFailedError
-from ui.cli import load_cli
-from ui.interactive import load_main_menu, load_payloads_menu, load_banner, clear_terminal, PAYLOADS, pause_flow, separator
-from ui.Logger import CustomLogger, LogFileError, DATE
+from controllers.function.backup_payload import Backup, BackupFailedError
+from controllers.cli_controller import load_cli
+from controllers.interactive_controller import load_main_menu, load_payloads_menu, load_banner, clear_terminal, PAYLOADS, pause_flow, separator
+from controllers.logger_controller import CustomLogger, LogFileError, DATE
 
 logger = CustomLogger()
 def main():
