@@ -1,9 +1,13 @@
 from pathlib import Path
 
-from controllers.ui_controller import load_cli, cli_mode, interactive_mode, logger
 from controllers.logger_controller import DATE, LogFileError
+from controllers.ui_controller import cli_mode, interactive_mode, load_cli, logger
+from handlers.file_management import (
+    DataLoadingError,
+    load_configuration,
+    load_inventory,
+)
 
-from handlers.file_management import load_configuration, load_inventory, DataLoadingError
 
 def main():
     args = load_cli()
@@ -31,14 +35,15 @@ def main():
         exit(1)
 
     try:
-        if args.interactive: 
+        if args.interactive:
             interactive_mode(fortigates, config, log_file)
         else:
             selected_payload = args.payload
-            cli_mode(fortigates, config, log_file,selected_payload)
+            cli_mode(fortigates, config, log_file, selected_payload)
     except KeyboardInterrupt:
         print("\nKeyboard Interruption Detected\nExiting Program...")
         exit(0)
+
 
 if __name__ == "__main__":
     main()

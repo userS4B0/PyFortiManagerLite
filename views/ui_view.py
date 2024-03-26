@@ -58,6 +58,6 @@ def clear_terminal():
 def separator(length):
     print("=" * length)
 
+
 def pause_flow():
     input("Press ANY KEY to continue...")
-

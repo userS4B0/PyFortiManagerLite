@@ -1,15 +1,18 @@
 import argparse
 from pathlib import Path
 
-from models.fortigate_model import FortigateOfflineError
-
-from views.ui_view import load_main_menu, load_payloads_menu, load_banner, clear_terminal, PAYLOADS, pause_flow, separator
-
-from controllers.logger_controller import CustomLogger, LogFileError, DATE
-
+from controllers.logger_controller import DATE, CustomLogger, LogFileError
 from handlers.payloads.backup_payload import Backup, BackupFailedError
-
-
+from models.fortigate_model import FortigateOfflineError
+from views.ui_view import (
+    PAYLOADS,
+    clear_terminal,
+    load_banner,
+    load_main_menu,
+    load_payloads_menu,
+    pause_flow,
+    separator,
+)
 
 
 def load_cli():
@@ -57,8 +60,8 @@ def load_cli():
 
     return parser.parse_args()
 
-def cli_mode(fortigates, config, log_file, payload = None):
-    
+
+def cli_mode(fortigates, config, log_file, payload=None):
     if payload is not None:
         match payload:
             case "single-backup":
@@ -69,8 +72,14 @@ def cli_mode(fortigates, config, log_file, payload = None):
                     try:
                         backup = Backup(device)
                         logger.info(f"Starting Job on: [{device.get_name()}]", log_file)
-                        backup.perform_backup(Path(config["BACKUP_PATH"]), f"{device.get_name()}_bkp_{DATE}.conf")
-                        logger.info(f'Job completed in [{device.get_name()}] backup successfully saved in: {config['BACKUP_PATH']}', log_file)
+                        backup.perform_backup(
+                            Path(config["BACKUP_PATH"]),
+                            f"{device.get_name()}_bkp_{DATE}.conf",
+                        )
+                        logger.info(
+                            f'Job completed in [{device.get_name()}] backup successfully saved in: {config['BACKUP_PATH']}',
+                            log_file,
+                        )
 
                     except LogFileError as e:
                         logger.warning(e)
@@ -96,7 +105,9 @@ def cli_mode(fortigates, config, log_file, payload = None):
     else:
         print("No payload selected! try '--help' for payload information")
 
+
 logger = CustomLogger()
+
 
 def show_inventory(inventory):
     clear_terminal()
@@ -109,6 +120,7 @@ def show_inventory(inventory):
     separator(80)
     pause_flow()
 
+
 def check_connectivity(fortigates, log_file):
     clear_terminal()
     print("CONNECTIVITY CHECK")
@@ -117,17 +129,20 @@ def check_connectivity(fortigates, log_file):
     for device in fortigates:
         try:
             access_ip = device.get_access_ip()
-            logger.info(f"[{device.get_name()}] Device connected at {access_ip}", log_file)
+            logger.info(
+                f"[{device.get_name()}] Device connected at {access_ip}", log_file
+            )
         except FortigateOfflineError as e:
             logger.warning(f"FortiGate {device.get_name()} is offline: {e}", log_file)
 
     separator(80)
     pause_flow()
 
+
 def execute_payload(selected_payload, fortigates, config_file, log_file):
     clear_terminal()
     print(f"Choosen payload: {PAYLOADS[selected_payload]} at id {selected_payload}")
-    
+
     # Implement logic for each payload option
     match selected_payload:
         case "1":
@@ -136,11 +151,19 @@ def execute_payload(selected_payload, fortigates, config_file, log_file):
             for device in fortigates:
                 try:
                     backup = Backup(device)
-                    logger.info(f'Starting Job on: [{device.get_name()}]', log_file)
-                    backup.perform_backup(Path(config_file['BACKUP_PATH']), f'{device.get_name()}_bkp_{DATE}.conf')
-                    logger.info(f'Job completed in [{device.get_name()}] backup successfully saved in: {config_file['BACKUP_PATH']}', log_file)
+                    logger.info(f"Starting Job on: [{device.get_name()}]", log_file)
+                    backup.perform_backup(
+                        Path(config_file["BACKUP_PATH"]),
+                        f"{device.get_name()}_bkp_{DATE}.conf",
+                    )
+                    logger.info(
+                        f'Job completed in [{device.get_name()}] backup successfully saved in: {config_file['BACKUP_PATH']}',
+                        log_file,
+                    )
                 except Exception as e:
-                    logger.warning(f'Backup failed for {device.get_name()}: {e}', log_file)
+                    logger.warning(
+                        f"Backup failed for {device.get_name()}: {e}", log_file
+                    )
         case "3":
             print(f"{PAYLOADS[selected_payload]} functionality Coming Soon!")
         case "4":
@@ -151,6 +174,7 @@ def execute_payload(selected_payload, fortigates, config_file, log_file):
 
     pause_flow()
     clear_terminal()
+
 
 def interactive_mode(fortigates, config, log_file):
     load_banner()
@@ -169,7 +193,7 @@ def interactive_mode(fortigates, config, log_file):
                     payload_option = load_payloads_menu()
                     if payload_option in PAYLOADS:
                         execute_payload(payload_option, fortigates, config, log_file)
-                    
+
                     match payload_option:
                         case "5":
                             clear_terminal()
@@ -185,8 +209,6 @@ def interactive_mode(fortigates, config, log_file):
             case "4":
                 clear_terminal()
                 print("Settings customization coming soon!")
-
-
 
             case "5":
                 clear_terminal()
