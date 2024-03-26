@@ -2,7 +2,7 @@ from pathlib import Path
 
 from controllers.logger_controller import DATE, LogFileError
 from controllers.ui_controller import cli_mode, interactive_mode, load_cli, logger
-from handlers.file_management import (
+from controllers.file_controller import (
     DataLoadingError,
     load_configuration,
     load_inventory,

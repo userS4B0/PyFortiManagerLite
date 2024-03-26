@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from controllers.logger_controller import DATE, CustomLogger, LogFileError
-from handlers.payloads.backup_payload import Backup, BackupFailedError
+from controllers.func.backup_payload import Backup, BackupFailedError
 from models.fortigate_model import FortigateOfflineError
 from views.ui_view import (
     PAYLOADS,
