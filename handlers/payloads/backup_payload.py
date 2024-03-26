@@ -36,7 +36,7 @@ class Backup:
         req = requests.session()  # Create a session for HTTP requests
 
         # Handle SSL Self Signed Certificate validations
-        if self.fortigate.has_self_signed_certificate():
+        if self.fortigate.has_s_signed_cert():
             requests.packages.urllib3.disable_warnings()
             req.verify = False
 

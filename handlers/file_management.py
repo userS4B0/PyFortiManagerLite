@@ -51,8 +51,8 @@ def load_configuration():
     Raises:
         ConfigurationError: If an error occurs while loading the configuration data.
     """
-    # CONFIG_PATH = Path('.').parent / 'config.yaml'  # Set the path to the configuration file
-    CONFIG_PATH = Path(".").parent / "data" / "user_config.yaml"  # ONLY FOR TESTING PURPOSES
+    # CONFIG_PATH = Path(".").parent / "config" / "config.yaml"  # Set the path to the configuration file
+    CONFIG_PATH = Path(".").parent / "config" / "user_config.yaml"  # ONLY FOR TESTING PURPOSES
 
     try:
         user_config = read_yaml_config(CONFIG_PATH)

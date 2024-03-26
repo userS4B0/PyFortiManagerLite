@@ -40,6 +40,29 @@ class FortiGate:
 
         self.access_ip = None
 
+    def __str__(self):
+        return f"{self.name:<20} {self.mgmt_ips[0]:<15} {self.mgmt_ips[1]:<15} {self.vdom_type:<15} {self.s_signed_cert:<10} {self.api_token:<20}"
+
+    def get_name(self):
+        """Getter method for the name attribute."""
+        return self.name
+
+    def get_management_ips(self):
+        """Getter method for the management_ips attribute."""
+        return self.mgmt_ips
+
+    def get_vdom_type(self):
+        """Getter method for the vdom_type attribute."""
+        return self.vdom_type
+
+    def has_s_signed_cert(self):
+        """Getter method for the s_signed_cert attribute."""
+        return self.s_signed_cert
+
+    def get_api_token(self):
+        """Getter method for the api_token attribute."""
+        return self.api_token
+
     def get_access_ip(self):
         """
         Tries to determine the access IP address by testing both management IPs.
@@ -58,7 +81,7 @@ class FortiGate:
             except FortigateOfflineError:
                 pass
 
-        raise FortigateOfflineError("No matching mgmt ip to access the device")
+        raise FortigateOfflineError("no matching mgmt ip to access the device")
 
     def test_connectivity(self, ip):
         """
@@ -104,4 +127,4 @@ class FortiGate:
         if access_ip:
             return f"https://{access_ip}{URI}{self.api_token}"
         else:
-            raise FortigateOfflineError("No access IP provided")
+            raise FortigateOfflineError("no access IP provided")

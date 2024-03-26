@@ -14,7 +14,7 @@ def show_inventory(inventory):
     separator(80)
 
     for device in inventory:
-        print(f"|   {device.get_name()}   |   {device.get_management_ip_01()}   |   {device.get_management_ip_02()}   |   {device.get_vdom_type()}   |")
+        print(str(device))
 
     separator(80)
     pause_flow()
@@ -27,7 +27,7 @@ def check_connectivity(fortigates, log_file):
     for device in fortigates:
         try:
             access_ip = device.get_access_ip()
-            logger.info(f"Device connected at {access_ip}", log_file)
+            logger.info(f"[{device.get_name()}] Device connected at {access_ip}", log_file)
         except FortigateOfflineError as e:
             logger.warning(f"FortiGate {device.get_name()} is offline: {e}", log_file)
 
@@ -36,7 +36,7 @@ def check_connectivity(fortigates, log_file):
 
 def execute_payload(selected_payload, fortigates, config_file, log_file):
     clear_terminal()
-    print(f"Choosen payload: {PAYLOADS[selected_payload]}")
+    print(f"Choosen payload: {PAYLOADS[selected_payload]} at id {selected_payload}")
     
     # Implement logic for each payload option
     match selected_payload:

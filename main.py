@@ -4,12 +4,14 @@ from controllers.cli_controller import load_cli
 from controllers.interactive_controller import interactive_mode, logger
 from controllers.logger_controller import DATE, LogFileError
 
-from handlers.file_management import load_configuration, load_inventory
+from handlers.file_management import load_configuration, load_inventory, DataLoadingError
 
 def main():
     args = load_cli()
     print(f'Selected Values: {args}')
 
+    if args.verbose:
+        logger.set_verbosity(True)
     try:
         config = load_configuration()  # Load app configuration
         print(f"Config loaded at: {config}")
@@ -23,17 +25,21 @@ def main():
         log_file = None
         pass
 
+    except DataLoadingError as e:
+        logger.critical(e)
+        exit(1)
+
     except Exception as e:
         logger.critical(e)
         exit(1)
 
     if args.interactive: 
-        print("Loading interactive menu...")
-        interactive_mode(fortigates, config, log_file)
+        try:
+            interactive_mode(fortigates, config, log_file)
+        except KeyboardInterrupt:
+            print("\nKeyboard Interruption Detected")
+            exit(0)
 
-
-    # if args.verbose:
-    #     logger.set_verbosity(True)
 
     # try:
     #     selected_payload = args.payload
