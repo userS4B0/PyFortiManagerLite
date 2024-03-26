@@ -1,24 +1,29 @@
 from pathlib import Path
 
-from models.fortigate_model import FortigateOfflineError
-
-from views.main_view import load_banner, clear_terminal, separator, PAYLOADS
-
-from controllers.function.backup_payload import Backup, BackupFailedError
 from controllers.cli_controller import load_cli
-from controllers.interactive_controller import load_main_menu, load_payloads_menu, pause_flow
-from controllers.logger_controller import CustomLogger, LogFileError, DATE
-
-from handlers.file_management import load_inventory, load_configuration
+from controllers.function.backup_payload import Backup, BackupFailedError
+from controllers.interactive_controller import (
+    load_main_menu,
+    load_payloads_menu,
+    pause_flow,
+)
+from controllers.logger_controller import DATE, CustomLogger, LogFileError
+from handlers.file_management import load_configuration, load_inventory
+from models.fortigate_model import FortigateOfflineError
+from views.main_view import PAYLOADS, clear_terminal, load_banner, separator
 
 logger = CustomLogger()
+
+
 def main():
     args = load_cli()
 
     try:
         config = load_configuration()  # Cargar la configuración de la aplicación
-        fortigates = load_inventory(Path(config['INVENTORY_FILE']))  # Cargar el inventario de fortigate
-        log_file = Path(config['LOGS_PATH']) / f'pyfgtmgrl_{DATE}.log'
+        fortigates = load_inventory(
+            Path(config["INVENTORY_FILE"])
+        )  # Cargar el inventario de fortigate
+        log_file = Path(config["LOGS_PATH"]) / f"pyfgtmgrl_{DATE}.log"
 
     except LogFileError as e:
         logger.warning(e)
@@ -35,7 +40,6 @@ def main():
             load_banner()
             program_running = True
             while program_running:
-
                 option = load_main_menu()
 
                 match option:
@@ -46,7 +50,9 @@ def main():
                         separator(80)
 
                         for device in fortigates:
-                            print(f"|   {device.get_name()}   |   {device.get_management_ip_01()}   |   {device.get_management_ip_02()}   |   {device.get_vdom_type()}   |")
+                            print(
+                                f"|   {device.get_name()}   |   {device.get_management_ip_01()}   |   {device.get_management_ip_02()}   |   {device.get_vdom_type()}   |"
+                            )
 
                         separator(80)
 
@@ -58,7 +64,10 @@ def main():
 
                         for device in fortigates:
                             try:
-                                logger.info(f'Testing connectivity to: [{device.get_name()}] on [{device.get_management_ip_01()}] & [{device.get_management_ip_02()}]', log_file)
+                                logger.info(
+                                    f"Testing connectivity to: [{device.get_name()}] on [{device.get_management_ip_01()}] & [{device.get_management_ip_02()}]",
+                                    log_file,
+                                )
                                 access_ip = device.get_access_ip()
                                 logger.info(f"Device connected at {access_ip}")
 
@@ -83,20 +92,35 @@ def main():
                             match payload_option:
                                 case "1":
                                     clear_terminal()
-                                    print(f"Choosen payload: {PAYLOADS[payload_option]}")
-                                    print(f"{PAYLOADS[payload_option]} functionality Coming Soon!")
+                                    print(
+                                        f"Choosen payload: {PAYLOADS[payload_option]}"
+                                    )
+                                    print(
+                                        f"{PAYLOADS[payload_option]} functionality Coming Soon!"
+                                    )
                                     pause_flow()
 
                                 case "2":
                                     clear_terminal()
-                                    print(f"Choosen payload: {PAYLOADS[payload_option]}")
+                                    print(
+                                        f"Choosen payload: {PAYLOADS[payload_option]}"
+                                    )
 
                                     for device in fortigates:
                                         try:
                                             backup = Backup(device)
-                                            logger.info(f'Starting Job on: [{device.get_name()}]', log_file)
-                                            backup.perform_backup(Path(config['BACKUP_PATH']), f'{device.get_name()}_bkp_{DATE}.conf')
-                                            logger.info(f'Job completed in [{device.get_name()}] backup successfully saved in: {config['BACKUP_PATH']}', log_file)
+                                            logger.info(
+                                                f"Starting Job on: [{device.get_name()}]",
+                                                log_file,
+                                            )
+                                            backup.perform_backup(
+                                                Path(config["BACKUP_PATH"]),
+                                                f"{device.get_name()}_bkp_{DATE}.conf",
+                                            )
+                                            logger.info(
+                                                f'Job completed in [{device.get_name()}] backup successfully saved in: {config['BACKUP_PATH']}',
+                                                log_file,
+                                            )
 
                                         except LogFileError as e:
                                             logger.warning(e)
@@ -115,14 +139,22 @@ def main():
 
                                 case "3":
                                     clear_terminal()
-                                    print(f"Choosen payload: {PAYLOADS[payload_option]}")
-                                    print(f"{PAYLOADS[payload_option]} functionality Coming Soon!")
+                                    print(
+                                        f"Choosen payload: {PAYLOADS[payload_option]}"
+                                    )
+                                    print(
+                                        f"{PAYLOADS[payload_option]} functionality Coming Soon!"
+                                    )
                                     pause_flow()
 
                                 case "4":
                                     clear_terminal()
-                                    print(f"Choosen payload: {PAYLOADS[payload_option]}")
-                                    print(f"{PAYLOADS[payload_option]} functionality Coming Soon!")
+                                    print(
+                                        f"Choosen payload: {PAYLOADS[payload_option]}"
+                                    )
+                                    print(
+                                        f"{PAYLOADS[payload_option]} functionality Coming Soon!"
+                                    )
                                     pause_flow()
 
                                 case "5":
@@ -167,9 +199,17 @@ def main():
                     for device in fortigates:
                         try:
                             backup = Backup(device)
-                            logger.info(f'Starting Job on: [{device.get_name()}]', log_file)
-                            backup.perform_backup(Path(config['BACKUP_PATH']), f'{device.get_name()}_bkp_{DATE}.conf')
-                            logger.info(f'Job completed in [{device.get_name()}] backup successfully saved in: {config['BACKUP_PATH']}', log_file)
+                            logger.info(
+                                f"Starting Job on: [{device.get_name()}]", log_file
+                            )
+                            backup.perform_backup(
+                                Path(config["BACKUP_PATH"]),
+                                f"{device.get_name()}_bkp_{DATE}.conf",
+                            )
+                            logger.info(
+                                f'Job completed in [{device.get_name()}] backup successfully saved in: {config['BACKUP_PATH']}',
+                                log_file,
+                            )
 
                         except LogFileError as e:
                             logger.warning(e)
@@ -198,5 +238,6 @@ def main():
         print("\nKeyboard interruption! Exiting...")
         exit(0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

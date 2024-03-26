@@ -1,17 +1,17 @@
 import os
 
-VERSION = '0.2'
-URL = 'https://github.com/userS4B0/PyFortiManagerLite'
+VERSION = "0.2"
+URL = "https://github.com/userS4B0/PyFortiManagerLite"
 
 PAYLOADS = {
     "1": "single-backup",
     "2": "multi-backup",
     "3": "sync-objects",
-    "4": "scrape-data"
+    "4": "scrape-data",
 }
 
-def load_banner():
 
+def load_banner():
     banner = f"""
     #  ================================================================================================================================  #
     #  __________       ___________               __   __   _____                                              ___     __  __            #
@@ -30,6 +30,7 @@ def load_banner():
 
     print(banner)
 
+
 def load_main_menu():
     print("Menu:")
     print("1. Show inventory")
@@ -38,6 +39,7 @@ def load_main_menu():
     print("4. Settings")
     print("5. Exit program")
     return input("Choose an option: ")
+
 
 def load_payloads_menu():
     print("Payloads menu: ")
@@ -48,8 +50,10 @@ def load_payloads_menu():
 
     return input("Choose a payload: ")
 
+
 def clear_terminal():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
+
 
 def separator(length):
     print("=" * length)
